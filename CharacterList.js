@@ -18,7 +18,6 @@ import "react-native-gesture-handler";
 import { calculateSeasonBreakdown } from "./seasonsCalculations";
 
 export function CharacterList({ navigation }) {
-  console.log({ navigation });
   const [characters, setCharacters] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [nextPageUrl, setNextPageUrl] = useState();
@@ -32,6 +31,7 @@ export function CharacterList({ navigation }) {
         setRefreshing(false);
       })
       .catch((error) => {
+        console.error(error);
         Alert.alert(
           "Error occured",
           "Something went wrong. Please try again.",
@@ -51,7 +51,14 @@ export function CharacterList({ navigation }) {
         setNextPageUrl(json.info.next);
         setCharacters([...characters, ...json.results]);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        Alert.alert(
+          "Error occured",
+          "Something went wrong. Please try again.",
+          [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+        );
+      });
     setLoadingMore(false);
   }, [setCharacters, setNextPageUrl, setLoadingMore, nextPageUrl, characters]);
   const onResetTap = useCallback(() => {
