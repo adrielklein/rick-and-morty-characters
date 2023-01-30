@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Image,
 } from "react-native";
+import { calculateSeasonBreakdown } from "./seasonsCalculations";
 
 export default function App() {
   const [characters, setCharacters] = useState([]);
@@ -20,13 +21,12 @@ export default function App() {
     fetch(`https://rickandmortyapi.com/api/character`)
       .then((response) => response.json())
       .then((json) => {
-        setCharacters(json.results);
         setNextPageUrl(json.info.next);
+        setCharacters(json.results);
         setRefreshing(false);
       })
       .catch((error) => console.error(error));
   }, [setCharacters, setRefreshing, setNextPageUrl]);
-
 
   const handleLoadMore = useCallback(() => {
     if (!nextPageUrl) {
@@ -51,8 +51,11 @@ export default function App() {
     loadData();
     setRefreshing(false);
   }, [loadData, setRefreshing]);
+  console.log('firstChar', characters[0])
+  // console.log('lala', calculateSeasonBreakdown(characters[0]))
 
   const renderItem = ({ item }) => {
+    console.log({ item });
     return (
       <View style={styles.rowContainer}>
         <Image
@@ -63,6 +66,9 @@ export default function App() {
         />
         <Text style={styles.rowText}>{item.name}</Text>
         <Text style={styles.rowText}>{item.status}</Text>
+        <Text style={styles.rowText}>
+          {calculateSeasonBreakdown(item.episode)}
+        </Text>
       </View>
     );
   };
@@ -77,6 +83,7 @@ export default function App() {
         <Text style={styles.headerText}>Image</Text>
         <Text style={styles.headerText}>Name</Text>
         <Text style={styles.headerText}>Status</Text>
+        <Text style={styles.headerText}>Season Breakdown</Text>
       </View>
       <FlatList
         data={characters}
@@ -126,7 +133,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontWeight: "bold",
-    width: "33%",
+    width: "25%",
     textAlign: "center",
   },
   rowContainer: {
@@ -137,7 +144,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   rowText: {
-    width: "33%",
+    width: "25%",
     textAlign: "center",
   },
 
