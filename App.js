@@ -9,6 +9,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   Image,
+  Alert,
 } from "react-native";
 import { calculateSeasonBreakdown } from "./seasonsCalculations";
 
@@ -43,19 +44,20 @@ export default function App() {
     setLoadingMore(false);
   }, [setCharacters, setNextPageUrl, setLoadingMore, nextPageUrl, characters]);
   const onResetTap = useCallback(() => {
-    loadData();
-  }, [loadData]);
+    setCharacters([]);
+    setNextPageUrl();
+    Alert.alert("Rest Successful", "App data has been", [
+      { text: "OK", onPress: () => console.log("OK Pressed") },
+    ]);
+  }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     loadData();
     setRefreshing(false);
   }, [loadData, setRefreshing]);
-  console.log('firstChar', characters[0])
-  // console.log('lala', calculateSeasonBreakdown(characters[0]))
 
   const renderItem = ({ item }) => {
-    console.log({ item });
     return (
       <View style={styles.rowContainer}>
         <Image
