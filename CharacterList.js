@@ -31,7 +31,13 @@ export function CharacterList({ navigation }) {
         setCharacters(json.results);
         setRefreshing(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        Alert.alert(
+          "Error occured",
+          "Something went wrong. Please try again.",
+          [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+        );
+      });
   }, [setCharacters, setRefreshing, setNextPageUrl]);
 
   const handleLoadMore = useCallback(() => {
