@@ -10,10 +10,36 @@ import {
   ActivityIndicator,
   Image,
   Alert,
+  TouchableWithoutFeedback,
 } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+
+import "react-native-gesture-handler";
+
 import { calculateSeasonBreakdown } from "./seasonsCalculations";
+const Stack = createStackNavigator();
 
 export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="CharacterList">
+        <Stack.Screen name="CharacterList" component={CharacterList} />
+        <Stack.Screen name="CharacterDetail" component={CharacterDetail} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function CharacterDetail({ name }) {
+  return (
+    <View style={styles.container}>
+      <Text>{name}</Text>
+    </View>
+  );
+}
+
+const CharacterList = () => {
   const [characters, setCharacters] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [nextPageUrl, setNextPageUrl] = useState();
@@ -59,25 +85,28 @@ export default function App() {
 
   const renderItem = ({ item }) => {
     return (
-      <View style={styles.rowContainer}>
-        <Image
-          style={styles.image}
-          source={{
-            uri: item.image,
-          }}
-        />
-        <Text style={styles.rowText}>{item.name}</Text>
-        <Text style={styles.rowText}>{item.status}</Text>
-        <Text style={styles.rowText}>
-          {calculateSeasonBreakdown(item.episode)}
-        </Text>
-      </View>
+      <TouchableWithoutFeedback
+        onPress={() => navigation.navigate("CharacterDetail", item)}
+      >
+        <View style={styles.rowContainer}>
+          <Image
+            style={styles.image}
+            source={{
+              uri: item.image,
+            }}
+          />
+          <Text style={styles.rowText}>{item.name}</Text>
+          <Text style={styles.rowText}>{item.status}</Text>
+          <Text style={styles.rowText}>
+            {calculateSeasonBreakdown(item.episode)}
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
     );
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titleText}>Rick and Morty Characters</Text>
       <TouchableOpacity style={styles.resetButton} onPress={onResetTap}>
         <Text style={styles.resetButtonText}>Reset</Text>
       </TouchableOpacity>
@@ -113,7 +142,7 @@ export default function App() {
       <StatusBar style="auto" />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
