@@ -4,7 +4,7 @@ This project was bootstrapped using [React Native Expo Go Quickstart](https://re
 
 ## Usage
 
-Start the development server by running the following command:
+Install dependencies via `yarn` or `npm install` and then start the development server by running the following command:
 
 ```bash
 npx expo start
